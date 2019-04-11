@@ -44,7 +44,7 @@ export default {};
   border-radius: 10px;
   margin-top: 20px;
   box-shadow: 2px 5px 5px #cacaca;
-  height: 230px;
+  height: 235px;
   .tips {
     display: flex;
     justify-content: space-between;
@@ -62,7 +62,7 @@ export default {};
     background-color: rgb(22, 155, 213);
     width: 150px;
     height: 35px;
-    margin-top: 10px;
+    margin-top: 22px;
     border-width: 1px;
     border-style: solid;
     border-color: rgb(22, 155, 213);

@@ -44,6 +44,7 @@ export default {};
     margin: auto;
     background-color: #f4f4f4;
     border-radius: 20px;
+    padding: 0 10px;
     .row {
       text-align: center;
       .logo {
