@@ -88,8 +88,8 @@ export default {
   data() {
     return {
       // 四个文本框的样式，和相应的图标
-      ClassA: "",
-      ClassAicon: "",
+      ClassA: "", //账号输入框
+      ClassAicon: "", //图标
       ClassB: "",
       ClassBicon: "",
       ClassC: "",
@@ -97,12 +97,12 @@ export default {
       ClassD: "",
       ClassDicon: "",
       // 双向绑定的文本框信息
-      account: "",
+      account: "", //账号
       password: "",
       passwordAgain: "",
       phone: "",
       // 注册的判断
-      flag:0
+      flag: 0 //文本每次输入完全正确时 ，让其值+1
     };
   },
   methods: {
@@ -146,7 +146,17 @@ export default {
           } else {
             // 如果不为空且格式正确，显示成功的样式
             if (isUserAccount.test(this.account)) {
-              var Account = localStorage.getItem("Account");
+              // 先获取到本地存储中的所有信息
+              var Info = JSON.parse(localStorage.getItem("Info"));
+              // 遍历count信息
+
+
+
+
+
+
+
+              
               // 如果格式正确，判断本地存储中是否有此账号
               if (this.account == Account) {
                 this.ClassA = "has-warning";
@@ -166,7 +176,7 @@ export default {
           }
           break;
         case "B":
-        // 如果密码为空
+          // 如果密码为空
           if (this.password == "") {
             this.ClassB = "";
             this.ClassBicon = "";
@@ -177,29 +187,37 @@ export default {
               this.ClassBicon = "glyphicon glyphicon-ok";
               // 判断值+1
               this.flag += 1;
-            }else{
+            } else {
+              //如果密码格式错误
               this.ClassB = "has-warning";
               this.ClassBicon = "glyphicon glyphicon-warning-sign";
-              alert('密码格式有误');
+              alert("密码格式有误");
             }
           }
           break;
         case "C":
-        // 如果密码为空
+          // 如果再次输入的密码为空
           if (this.passwordAgain == "") {
             this.ClassC = "";
             this.ClassCicon = "";
           } else {
-            // 如果密码和第一次密码输入相同，则成功
-            if(this.passwordAgain === this.password){
-              this.ClassC = "has-success";
-              this.ClassCicon = "glyphicon glyphicon-ok";
-              // 判断值+1
-              this.flag += 1;
-            }else{
+            // 如果密码不为空，先判断格式是否合法
+            if (isUserPassword.test(this.passwordAgain)) {
+              // 如果再次密码格式正确判断和第一次密码输入是否相同
+              if (this.passwordAgain === this.password) {
+                this.ClassC = "has-success";
+                this.ClassCicon = "glyphicon glyphicon-ok";
+                // 判断值+1
+                this.flag += 1;
+              } else {
+                this.ClassC = "has-error";
+                this.ClassCicon = "glyphicon glyphicon-remove";
+                alert("两次密码不一致");
+              }
+            } else {
+              // 如果输入的格式不合法
               this.ClassC = "has-error";
               this.ClassCicon = "glyphicon glyphicon-remove";
-              alert('两次密码不一致');
             }
           }
           break;
@@ -216,7 +234,7 @@ export default {
               if (this.phone == Phone) {
                 this.ClassD = "has-warning";
                 this.ClassDicon = "glyphicon glyphicon-warning-sign";
-                alert("账号已被注册");
+                alert("手机号已被注册");
                 return;
               }
               this.ClassD = "has-success";
@@ -232,20 +250,42 @@ export default {
           break;
       }
     },
-    register(){
-      if(this.account=="" || this.password=="" || this.passwordAgain=="" || this.phone==""){
-        alert('注册文本为空，请检查！');
-      }else{
-        if(this.flag != 4){
-          alert('注册文本有误，请检查！');
-        }else{
+    register() {
+      var s = JSON.parse(localStorage.getItem("Info"));
+      console.log(s);
+      if (
+        this.account == "" ||
+        this.password == "" ||
+        this.passwordAgain == "" ||
+        this.phone == ""
+      ) {
+        alert("注册文本为空，请检查！");
+      } else {
+        if (this.flag != 4) {
+          alert("注册文本有误，请检查！");
+        } else {
           // 把成功的信息录入本地存储
-          localStorage.setItem('Account', this.account);
-          localStorage.setItem('Password', this.password);
-          localStorage.setItem('Phone', this.phone);
-          alert('注册成功！');
+          //获取本地存储中已有的信息
+          var oldInfo = localStorage.getItem("Info");
+          //获取输入的信息
+          var Info = {
+            Account: this.account,
+            Password: this.password,
+            Phone: this.phone
+          };
+          // 如果本地中存储的信息不为空
+          if (oldInfo != null) {
+            //把两次的信息拼接成一个json
+            var NewInfo = "[" + oldInfo + "," + JSON.stringify(Info) + "]";
+            //把最新的信息JOSN放入本地存储
+            localStorage.setItem("Info", NewInfo);
+          } else {
+            // 如果本地存储为空，则为第一次注册，直接放到本地存储中
+            localStorage.setItem("Info", JSON.stringify(Info));
+          }
+          alert("注册成功！");
           // 注册成功后自动进入登录页面组件
-          window.location.href="http://localhost:3000/#/login";
+          window.location.href = "http://localhost:3000/#/login";
         }
       }
     }
